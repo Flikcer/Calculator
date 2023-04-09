@@ -21,7 +21,7 @@ buttons.forEach((button) => {
       // Add the number to the array
       numbers.push(value);
       // Update the screen with the new number
-      screen.textContent = numbers.join("");
+      screen.textContent += value;
     }
 
     // Check if the button is an operator button
@@ -56,6 +56,9 @@ buttons.forEach((button) => {
       numbers = [];
       // Store the operator
       operator = value;
+
+      // Update the screen with the equation
+      screen.textContent += value;
     }
 
     // Check if the button is the equal button
@@ -103,83 +106,3 @@ buttons.forEach((button) => {
     }
   });
 });
-
-// // Initialize an empty array to store the input numbers
-// let numbers = [];
-
-// // Initialize variables to store the operands and operator
-// let operand1 = null;
-// let operand2 = null;
-// let operator = null;
-
-// // Get references to the calculator screen and buttons
-// const screen = document.querySelector(".screen");
-// const buttons = document.querySelectorAll(".button");
-
-// // Add event listeners to the buttons
-// buttons.forEach((button) => {
-//   button.addEventListener("click", () => {
-//     // Get the value of the button
-//     const value = button.value;
-
-//     // Check if the button is a number button
-//     if (!isNaN(value)) {
-//       // Add the number to the array
-//       numbers.push(value);
-//       // Update the screen with the new number
-//       screen.textContent = numbers.join("");
-//     }
-
-//     // Check if the button is an operator button
-//     if (value === "+" || value === "-" || value === "*" || value === "/") {
-//       // Concatenate all the numbers in the array to form a single string
-//       const numberString = numbers.join("");
-//       // Convert the string to a number and store it as the first operand
-//       operand1 = Number(numberString);
-//       // Clear the array
-//       numbers = [];
-//       // Store the operator
-//       operator = value;
-//     }
-
-//     // Check if the button is the equal button
-//     if (value === "equal") {
-//       // Concatenate all the numbers in the array to form a single string
-//       const numberString = numbers.join("");
-//       // Convert the string to a number and store it as the second operand
-//       operand2 = Number(numberString);
-//       // Clear the array
-//       numbers = [];
-
-//       // Perform the calculation based on the operator
-//       let result;
-//       switch (operator) {
-//         case "+":
-//           result = operand1 + operand2;
-//           break;
-//         case "-":
-//           result = operand1 - operand2;
-//           break;
-//         case "*":
-//           result = operand1 * operand2;
-//           break;
-//         case "/":
-//           result = operand1 / operand2;
-//           break;
-//       }
-
-//       // Update the screen with the result
-//       screen.textContent = result.toString();
-//     }
-
-//     // Check if the button is the clear button
-//     if (value === "clear") {
-//       // Reset all the variables and update the screen
-//       numbers = [];
-//       operand1 = null;
-//       operand2 = null;
-//       operator = null;
-//       screen.textContent = "";
-//     }
-//   });
-// });
