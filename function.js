@@ -1,108 +1,71 @@
-// Initialize an empty array to store the input numbers
+//store arr of inputted nums, this will be useful to display the equation on screen
 let numbers = [];
 
-// Initialize variables to store the operands and operator
+//operand 1 will hold the val of the math done on the first nums dynamically if more than 2 entered
 let operand1 = null;
 let operand2 = null;
+//mfunciton being handlewd
 let operator = null;
 
 // Get references to the calculator screen and buttons
 const screen = document.querySelector(".screen");
 const buttons = document.querySelectorAll(".button");
 
-// Add event listeners to the buttons
+//queryselectorAll gives you an arr of all buttons, for each of these listen for a click then perform
+//these will enclose all operations and functions
 buttons.forEach((button) => {
+  //listen for click
   button.addEventListener("click", () => {
-    // Get the value of the button
+    //grab the val we gave the buttons in html and store
     const value = button.value;
+    //for 100 most translate the button a small amount on the y axis to simulate button clicks
+    button.classList.add("active");
+    setTimeout(() => button.classList.remove("active"), 100);
 
-    // Check if the button is a number button
+    //this if statement will che check if value is a number, if not an operand must have been pressed so push to the screen
     if (!isNaN(value)) {
-      // Add the number to the array
+      //add entered val to global numbers arr
       numbers.push(value);
-      // Update the screen with the new number
+      //add it to the screen element
       screen.textContent += value;
-    }
-
-    // Check if the button is an operator button
-    if (value === "+" || value === "-" || value === "*" || value === "/") {
-      // Concatenate all the numbers in the array to form a single string
-      const numberString = numbers.join("");
-      // Convert the string to a number and store it as the operand
-      const operand = Number(numberString);
-
-      // If there is no current operand1, store the current operand as operand1
-      if (operand1 === null) {
-        operand1 = operand;
-      } else {
-        // If there is a current operand1, perform the operation and store the result as operand1
-        switch (operator) {
-          case "+":
-            operand1 = operand1 + operand;
-            break;
-          case "-":
-            operand1 = operand1 - operand;
-            break;
-          case "*":
-            operand1 = operand1 * operand;
-            break;
-          case "/":
-            operand1 = operand1 / operand;
-            break;
-        }
-      }
-
-      // Clear the array
+      //else if the value is a function symbol using regex and includes to find
+    } else if (["+", "-", "*", "/"].includes(value)) {
+      //take all the elements in the numbers array and joining them together into a single string, which is then stored in the operand1 variable
+      operand1 = numbers.join("");
       numbers = [];
-      // Store the operator
       operator = value;
-
-      // Update the screen with the equation
+      //update screen val text
       screen.textContent += value;
-    }
 
-    // Check if the button is the equal button
-    if (value === "equal") {
-      // Concatenate all the numbers in the array to form a single string
-      const numberString = numbers.join("");
-      // Convert the string to a number and store it as the second operand
-      const operand2 = Number(numberString);
-
-      // Perform the calculation based on the operator and current operand1 and operand2
+      //if equals is clicked, math must then be performed on the equation
+    } else if (value === "=") {
+      operand2 = numbers.join("");
+      //this must be done since the numbers array will store double digit numbers in spearate indexes
+      numbers = [];
       let result;
-      switch (operator) {
-        case "+":
-          result = operand1 + operand2;
-          break;
-        case "-":
-          result = operand1 - operand2;
-          break;
-        case "*":
-          result = operand1 * operand2;
-          break;
-        case "/":
-          result = operand1 / operand2;
-          break;
+      //if identify operator parse the joined string and do that proper calculation and set it to result
+      //if / used in conjunction with operand 2 === 0, print undefined, if not perform the /
+      if (operator === "+") {
+        result = parseInt(operand1) + parseInt(operand2);
+      } else if (operator === "-") {
+        result = parseInt(operand1) - parseInt(operand2);
+      } else if (operator === "*") {
+        result = parseInt(operand1) * parseInt(operand2);
+      } else if (operator === "/") {
+        if (operand2 === "0") {
+          screen.textContent = "Undefined";
+          return;
+        }
+        result = parseInt(operand1) / parseInt(operand2);
       }
-
-      // Update the screen with the result
-      screen.textContent = result.toString();
-
-      // Clear the array and reset the operands and operator
-      numbers = [];
-      operand1 = null;
-      operand2 = null;
-      operator = null;
-    }
-
-    // Check if the button is the clear button
-    if (value === "clear") {
-      // Reset all the variables and update the screen
-      numbers = [];
-      operand1 = null;
-      operand2 = null;
-      operator = null;
+      screen.textContent = result;
+    } else if (value === "clear") {
+      //clear the screen and reset the variables if C is clicked
       screen.textContent = "";
+      numbers = [];
+      operand1 = null;
+      operand2 = null;
+      operator = null;
     }
   });
 });
