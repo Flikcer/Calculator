@@ -31,11 +31,16 @@ buttons.forEach((button) => {
       //else if the value is a function symbol using regex and includes to find
     } else if (["+", "-", "*", "/"].includes(value)) {
       //take all the elements in the numbers array and joining them together into a single string, which is then stored in the operand1 variable
-      //nullish coalescing to check is operand1 is null if not assign it the result of the previous equation
+      //ternary operator to check if operand1 is null if not assign it the result of the previous equation
       operand1 =
         operand1 === null
           ? numbers.join("")
           : eval(operand1 + operator + numbers.join(""));
+      // if (operand1 === null) {
+      //   operand1 = numbers.join("");
+      // } else {
+      //   operand1 = eval(operand1 + operator + numbers.join(""));
+      // }
       numbers = [];
       operator = value;
       //update screen val text
