@@ -31,7 +31,11 @@ buttons.forEach((button) => {
       //else if the value is a function symbol using regex and includes to find
     } else if (["+", "-", "*", "/"].includes(value)) {
       //take all the elements in the numbers array and joining them together into a single string, which is then stored in the operand1 variable
-      operand1 = parseInt(numbers.join(""));
+      //nullish coalescing to check is operand1 is null if not assign it the result of the previous equation
+      operand1 =
+        operand1 === null
+          ? numbers.join("")
+          : eval(operand1 + operator + numbers.join(""));
       numbers = [];
       operator = value;
       //update screen val text
@@ -39,26 +43,27 @@ buttons.forEach((button) => {
 
       //if equals is clicked, math must then be performed on the equation
     } else if (value === "=") {
-      operand2 = parseInt(numbers.join(""));
+      operand2 = numbers.join("");
       //this must be done since the numbers array will store double digit numbers in spearate indexes
       numbers = [];
       let result;
       //if identify operator parse the joined string and do that proper calculation and set it to result
       //if / used in conjunction with operand 2 === 0, print undefined, if not perform the /
       if (operator === "+") {
-        result = operand1 + operand2;
+        result = parseInt(operand1) + parseInt(operand2);
       } else if (operator === "-") {
-        result = operand1 - operand2;
+        result = parseInt(operand1) - parseInt(operand2);
       } else if (operator === "*") {
-        result = operand1 * operand2;
+        result = parseInt(operand1) * parseInt(operand2);
       } else if (operator === "/") {
-        if (operand2 === 0) {
+        if (operand2 === "0") {
           screen.textContent = "Undefined";
           return;
         }
-        result = operand1 / operand2;
+        result = parseInt(operand1) / parseInt(operand2);
       }
       screen.textContent = result;
+      operand1 = result.toString(); // update operand1 with the result
     } else if (value === "clear") {
       //clear the screen and reset the variables if C is clicked
       screen.textContent = "";
