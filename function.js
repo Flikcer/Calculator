@@ -1,76 +1,48 @@
-//store arr of inputted nums, this will be useful to display the equation on screen
 let numbers = [];
-
-//operand 1 will hold the val of the math done on the first nums dynamically if more than 2 entered
 let operand1 = null;
 let operand2 = null;
-//mfunciton being handlewd
 let operator = null;
 
-// Get references to the calculator screen and buttons
 const screen = document.querySelector(".screen");
 const buttons = document.querySelectorAll(".button");
 
-//queryselectorAll gives you an arr of all buttons, for each of these listen for a click then perform
-//these will enclose all operations and functions
 buttons.forEach((button) => {
-  //listen for click
   button.addEventListener("click", () => {
-    //grab the val we gave the buttons in html and store
     const value = button.value;
-    //for 100 most translate the button a small amount on the y axis to simulate button clicks
     button.classList.add("active");
     setTimeout(() => button.classList.remove("active"), 100);
 
-    //this if statement will che check if value is a number, if not an operand must have been pressed so push to the screen
     if (!isNaN(value)) {
-      //add entered val to global numbers arr
       numbers.push(value);
-      //add it to the screen element
       screen.textContent += value;
-      //else if the value is a function symbol using regex and includes to find
-    } else if (["+", "-", "*", "/"].includes(value)) {
-      //take all the elements in the numbers array and joining them together into a single string, which is then stored in the operand1 variable
-      //ternary operator to check if operand1 is null if not assign it the result of the previous equation
+    } else if (["+", "-"].includes(value)) {
+      performMultiplicationAndDivision();
       operand1 =
         operand1 === null
           ? numbers.join("")
           : eval(operand1 + operator + numbers.join(""));
-      // if (operand1 === null) {
-      //   operand1 = numbers.join("");
-      // } else {
-      //   operand1 = eval(operand1 + operator + numbers.join(""));
-      // }
       numbers = [];
       operator = value;
-      //update screen val text
       screen.textContent += value;
-
-      //if equals is clicked, math must then be performed on the equation
+    } else if (["*", "/"].includes(value)) {
+      numbers.push(value);
+      screen.textContent += value;
     } else if (value === "=") {
+      performMultiplicationAndDivision();
       operand2 = numbers.join("");
-      //this must be done since the numbers array will store double digit numbers in spearate indexes
       numbers = [];
       let result;
-      //if identify operator parse the joined string and do that proper calculation and set it to result
-      //if / used in conjunction with operand 2 === 0, print undefined, if not perform the /
       if (operator === "+") {
         result = parseInt(operand1) + parseInt(operand2);
       } else if (operator === "-") {
         result = parseInt(operand1) - parseInt(operand2);
-      } else if (operator === "*") {
-        result = parseInt(operand1) * parseInt(operand2);
-      } else if (operator === "/") {
-        if (operand2 === "0") {
-          screen.textContent = "Undefined";
-          return;
-        }
-        result = parseInt(operand1) / parseInt(operand2);
       }
       screen.textContent = result;
-      operand1 = result.toString(); // update operand1 with the result
+      operand1 =
+        operand1 === null ? result.toString() : result.toString() + operator;
+      operand2 = null;
+      operator = null;
     } else if (value === "clear") {
-      //clear the screen and reset the variables if C is clicked
       screen.textContent = "";
       numbers = [];
       operand1 = null;
@@ -79,3 +51,41 @@ buttons.forEach((button) => {
     }
   });
 });
+
+function performMultiplicationAndDivision() {
+  let index = -1;
+  let i = 0;
+  while (i < numbers.length) {
+    if (["*", "/"].includes(numbers[i])) {
+      index = i;
+      break;
+    }
+    i++;
+  }
+  if (index !== -1) {
+    let left = numbers.slice(0, index).join("");
+    let right = numbers.slice(index + 1).join("");
+    let result;
+    if (numbers[index] === "*") {
+      result = parseInt(left) * parseInt(right);
+    } else if (numbers[index] === "/") {
+      if (right === "0") {
+        screen.textContent = "Undefined";
+        return;
+      }
+      result = parseInt(left) / parseInt(right);
+    }
+    numbers.splice(
+      index - left.length,
+      right.length + left.length + 1,
+      result.toString()
+    );
+    if (operand1 === null) {
+      operand1 = result.toString();
+    } else {
+      operand1 = eval(operand1 + operator + result.toString());
+    }
+    operator = null;
+  }
+  screen.textContent = operand1 !== null ? operand1 : numbers.join("");
+}
