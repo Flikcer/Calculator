@@ -15,32 +15,28 @@ buttons.forEach((button) => {
     if (!isNaN(value)) {
       numbers.push(value);
       screen.textContent += value;
-    } else if (["+", "-"].includes(value)) {
+    } else if (["+", "-", "*", "/"].includes(value)) {
       performMultiplicationAndDivision();
-      operand1 =
-        operand1 === null
-          ? numbers.join("")
-          : eval(operand1 + operator + numbers.join(""));
+      if (operand1 === null) {
+        operand1 = numbers.join("");
+      } else {
+        operand2 = numbers.join("");
+        operand1 = eval(operand1 + operator + operand2).toString();
+        operand2 = null;
+      }
       numbers = [];
       operator = value;
       screen.textContent += value;
-    } else if (["*", "/"].includes(value)) {
-      numbers.push(value);
-      screen.textContent += value;
     } else if (value === "=") {
       performMultiplicationAndDivision();
-      operand2 = numbers.join("");
-      numbers = [];
-      let result;
-      if (operator === "+") {
-        result = parseInt(operand1) + parseInt(operand2);
-      } else if (operator === "-") {
-        result = parseInt(operand1) - parseInt(operand2);
+      if (operand1 !== null && operator !== null) {
+        operand2 = numbers.join("");
+        let result = eval(operand1 + operator + operand2);
+        operand1 = result.toString();
+        operand2 = null;
+        operator = null;
+        screen.textContent = result.toString();
       }
-      operand1 = result.toString();
-      operand2 = null;
-      operator = null;
-      screen.textContent = result.toString();
     } else if (value === "clear") {
       screen.textContent = "";
       numbers = [];
@@ -79,12 +75,5 @@ function performMultiplicationAndDivision() {
       right.length + left.length + 1,
       result.toString()
     );
-    if (operand1 === null) {
-      operand1 = result.toString();
-    } else {
-      operand1 = eval(operand1 + operator + result.toString());
-    }
-    operator = null;
   }
-  screen.textContent = operand1 !== null ? operand1 : numbers.join("");
 }
