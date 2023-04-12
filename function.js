@@ -37,11 +37,10 @@ buttons.forEach((button) => {
       } else if (operator === "-") {
         result = parseInt(operand1) - parseInt(operand2);
       }
-      screen.textContent = result;
-      operand1 =
-        operand1 === null ? result.toString() : result.toString() + operator;
+      operand1 = result.toString();
       operand2 = null;
       operator = null;
+      screen.textContent = result.toString();
     } else if (value === "clear") {
       screen.textContent = "";
       numbers = [];
