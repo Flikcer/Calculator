@@ -18,10 +18,10 @@ buttons.forEach((button) => {
     } else if (["+", "-", "*", "/"].includes(value)) {
       performMultiplicationAndDivision();
       if (operand1 === null) {
-        operand1 = numbers.join("");
+        operand1 = parseFloat(numbers.join("."));
       } else {
-        operand2 = numbers.join("");
-        operand1 = eval(operand1 + operator + operand2).toString();
+        operand2 = parseFloat(numbers.join("."));
+        operand1 = performOperation(operand1, operator, operand2);
         operand2 = null;
       }
       numbers = [];
@@ -30,12 +30,11 @@ buttons.forEach((button) => {
     } else if (value === "=") {
       performMultiplicationAndDivision();
       if (operand1 !== null && operator !== null) {
-        operand2 = numbers.join("");
-        let result = eval(operand1 + operator + operand2);
-        operand1 = result.toString();
+        operand2 = parseFloat(numbers.join("."));
+        operand1 = performOperation(operand1, operator, operand2);
         operand2 = null;
         operator = null;
-        screen.textContent = result.toString();
+        screen.textContent = operand1.toString();
       }
     } else if (value === "clear") {
       screen.textContent = "";
@@ -58,22 +57,41 @@ function performMultiplicationAndDivision() {
     i++;
   }
   if (index !== -1) {
-    let left = numbers.slice(0, index).join("");
-    let right = numbers.slice(index + 1).join("");
+    let left = parseFloat(numbers.slice(0, index).join("."));
+    let right = parseFloat(numbers.slice(index + 1).join("."));
     let result;
     if (numbers[index] === "*") {
-      result = parseInt(left) * parseInt(right);
+      result = left * right;
     } else if (numbers[index] === "/") {
-      if (right === "0") {
+      if (right === 0) {
         screen.textContent = "Undefined";
         return;
       }
-      result = parseInt(left) / parseInt(right);
+      result = left / right;
     }
     numbers.splice(
-      index - left.length,
-      right.length + left.length + 1,
+      index - left.toString().length,
+      right.toString().length + left.toString().length + 1,
       result.toString()
     );
+  }
+}
+
+function performOperation(operand1, operator, operand2) {
+  switch (operator) {
+    case "+":
+      return operand1 + operand2;
+    case "-":
+      return operand1 - operand2;
+    case "*":
+      return operand1 * operand2;
+    case "/":
+      if (operand2 === 0) {
+        screen.textContent = "Undefined";
+        return operand1;
+      }
+      return operand1 / operand2;
+    default:
+      return operand1;
   }
 }
